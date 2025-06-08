@@ -1,0 +1,50 @@
+server:
+  port: 8011
+  servlet:
+    context-path: /api
+
+spring:
+  application:
+    name: e-commerce-agent
+  profiles:
+    active: dev
+  ai:
+    dashscope:
+      api-key: your api key
+      chat:
+        options:
+          model: qwen-plus
+    mcp:
+      client:
+        stdio:
+          servers-configuration: classpath:mcp-servers.json
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+      database: 0
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: your username
+    password: your password
+    driver-class-name: org.postgresql.Driver
+# springdoc-openapi
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+  group-configs:
+    - group: 'default'
+      paths-to-match: '/**'
+      packages-to-scan: com.ecommerce.agent
+# knife4j
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
+logging:
+  level:
+    org.springframework.ai: info
