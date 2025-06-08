@@ -1,6 +1,8 @@
 package com.ecommerce.agent.app;
 
+import com.alibaba.cloud.ai.dashscope.chat.DashScopeChatModel;
 import com.ecommerce.agent.advisor.MyLoggerAdvisor;
+import com.ecommerce.agent.advisor.QueryTransformerAdvisor;
 import com.ecommerce.agent.config.ConsoleColorConfig;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +17,7 @@ import org.springframework.ai.rag.preretrieval.query.transformation.QueryTransfo
 import org.springframework.ai.tool.ToolCallback;
 import org.springframework.ai.tool.ToolCallbackProvider;
 import org.springframework.ai.vectorstore.pgvector.PgVectorStore;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -39,6 +42,8 @@ public class CustomerServiceApp {
             "用户明确要求转接人工。\n" +
             "主动服务：回答问题后，根据场景主动提供相关信息（如退换货时告知物流地址、查询物流时推荐同类商品）。\n" +
             "请始终以解决用户问题、提升用户满意度为核心目标，保持专业且温暖的服务风格。";
+    @Autowired
+    private DashScopeChatModel dashScopeChatModel;
 
     /**
      *
@@ -173,7 +178,22 @@ public class CustomerServiceApp {
                 .tools(allTools)
                 .advisors(spec -> spec.param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId) //// 关联会话ID，保持对话上下文
                         .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 10)) // 设置检索历史消息的数量
-                .advisors(new QueryTransformer())
+                .call()
+                .chatResponse();
+        String content = chatResponse.getResult().getOutput().getText();
+        log.info(ConsoleColorConfig.BLUE+"content: {}", content);
+        return content;
+    }
+
+    public String doChatWithQueryTransformer(String message, String chatId) {
+
+        ChatResponse chatResponse = chatClient
+                .prompt()
+                .user(message)
+                .tools(allTools)
+                .advisors(spec -> spec.param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId) //// 关联会话ID，保持对话上下文
+                        .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 10)) // 设置检索历史消息的数量
+                .advisors(new QueryTransformerAdvisor(dashScopeChatModel))
                 .call()
                 .chatResponse();
         String content = chatResponse.getResult().getOutput().getText();
