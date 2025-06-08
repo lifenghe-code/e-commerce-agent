@@ -11,7 +11,10 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
 
-// @Configuration
+/**
+ * 基于内存存储
+ */
+@Configuration
 public class VectorStoreConfig {
 
     @Resource
