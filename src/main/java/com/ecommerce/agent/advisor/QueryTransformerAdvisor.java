@@ -46,8 +46,11 @@ public class QueryTransformerAdvisor implements CallAroundAdvisor, StreamAroundA
 
         Query query = new Query(advisedRequest.userText());
 
+        ChatClient.Builder chatClientBuilder = ChatClient.builder(dashScopeChatModel);
+
+
         QueryTransformer queryTransformer = RewriteQueryTransformer.builder()
-                .chatClientBuilder((ChatClient.Builder) dashScopeChatModel)
+                .chatClientBuilder(chatClientBuilder)
                 .build();
 
         Query transformedQuery = queryTransformer.transform(query);
