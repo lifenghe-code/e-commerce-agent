@@ -1,6 +1,8 @@
 package com.ecommerce.agent.app;
 
+import com.alibaba.cloud.ai.advisor.DocumentRetrievalAdvisor;
 import com.alibaba.cloud.ai.dashscope.chat.DashScopeChatModel;
+import com.ecommerce.agent.advisor.DocumentAdvancedRetrieverAdvisor;
 import com.ecommerce.agent.advisor.MyLoggerAdvisor;
 import com.ecommerce.agent.advisor.QueryTransformerAdvisor;
 import com.ecommerce.agent.config.ConsoleColorConfig;
@@ -78,12 +80,13 @@ public class CustomerServiceApp {
      * @param chatId
      * @return
      */
-    public String doChat(String message, String chatId) {
+    public String doChatWithAdvancedRetriever(String message, String chatId) {
         ChatResponse chatResponse = chatClient
                 .prompt()
                 .user(message)
                 .advisors(spec -> spec.param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId) //// 关联会话ID，保持对话上下文
                         .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 10)) // 设置检索历史消息的数量
+                .advisors(new DocumentAdvancedRetrieverAdvisor().getAdvisor())
                 .call()
                 .chatResponse();
         String content = chatResponse.getResult().getOutput().getText();
