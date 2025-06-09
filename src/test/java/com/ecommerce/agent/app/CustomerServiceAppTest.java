@@ -31,10 +31,7 @@ class CustomerServiceAppTest {
 
     @Test
     void testChat() {
-        String chatId = UUID.randomUUID().toString();
-        // 第一轮
-        String message = "你好，请说明一下你能做哪些事？";
-        String answer = customerServiceApp.doChat(message, chatId);
+
         // 第二轮
     }
 
@@ -61,5 +58,21 @@ class CustomerServiceAppTest {
         // 测试地图 MCP
         String message = "介绍一下iphone16";
         String answer =  customerServiceApp.doChatWithConverter(message, chatId);
+    }
+
+    @Test
+    void doChatWithQueryTransformer() {
+        String chatId = UUID.randomUUID().toString();
+        // 测试地图 MCP
+        String message = "Hello world，啊啊啊啊啊，啊啊啊，介绍一下iphone16";
+        String answer =  customerServiceApp.doChatWithQueryTransformer(message, chatId);
+    }
+
+    @Test
+    void doChatWithAdvancedRetriever() {
+        String chatId = UUID.randomUUID().toString();
+        // 测试地图 MCP
+        String message = "介绍一下iphone16";
+        String answer = customerServiceApp.doChatWithAdvancedRetriever(message, chatId);
     }
 }
