@@ -1,7 +1,7 @@
 package com.ecommerce.agent.app;
 
-import com.alibaba.cloud.ai.advisor.DocumentRetrievalAdvisor;
 import com.alibaba.cloud.ai.dashscope.chat.DashScopeChatModel;
+import com.ecommerce.agent.advisor.ChatSummaryAdvisor;
 import com.ecommerce.agent.advisor.DocumentAdvancedRetrieverAdvisor;
 import com.ecommerce.agent.advisor.MyLoggerAdvisor;
 import com.ecommerce.agent.advisor.QueryTransformerAdvisor;
@@ -11,11 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.client.advisor.QuestionAnswerAdvisor;
-import org.springframework.ai.chat.client.advisor.api.Advisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
-import org.springframework.ai.rag.preretrieval.query.transformation.QueryTransformer;
 import org.springframework.ai.tool.ToolCallback;
 import org.springframework.ai.tool.ToolCallbackProvider;
 import org.springframework.ai.vectorstore.pgvector.PgVectorStore;
@@ -64,7 +62,8 @@ public class CustomerServiceApp {
                 .defaultSystem(SYSTEM_PROMPT)
                 .defaultAdvisors(
                         new MessageChatMemoryAdvisor(chatRedisMemory),
-                        new QuestionAnswerAdvisor(pgVectorStore)
+                        new QuestionAnswerAdvisor(pgVectorStore),
+                        new ChatSummaryAdvisor()
                         // 自定义日志 Advisor，可按需开启
                         //new MyLoggerAdvisor()
 //                        // 自定义推理增强 Advisor，可按需开启
@@ -101,7 +100,7 @@ public class CustomerServiceApp {
      * @return
      */
     public String doChatWithConverter(String message, String chatId) {
-        record ActorsFilms(String product, List<String> properties){}
+        record ActorsFilms(String product, List<String> properties, String summary){}
         ActorsFilms entity = chatClient
                 .prompt()
                 .user(message)
