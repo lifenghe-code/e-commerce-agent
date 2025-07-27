@@ -12,8 +12,9 @@ import java.util.Date;
 @AllArgsConstructor
 @Data
 public class ChatEntity implements Serializable {
-    String chatId;
+    Long conversationId;  // 所属会话的ID
+    String chatId; // 对话ID
     String type;
     String text;
-    Long date = new Date().getTime();
+    Long date = new Date().getTime(); // 最近更新时间
 }
