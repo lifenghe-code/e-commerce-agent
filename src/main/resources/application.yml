@@ -23,11 +23,15 @@ spring:
       host: 127.0.0.1
       port: 6379
       database: 0
+    mongodb:
+      uri: mongodb://localhost:27017/agent-session
+      database: agent-session
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
     username: your username
     password: your password
     driver-class-name: org.postgresql.Driver
+
 # springdoc-openapi
 springdoc:
   swagger-ui:
