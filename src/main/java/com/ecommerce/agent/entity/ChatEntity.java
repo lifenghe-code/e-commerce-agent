@@ -12,7 +12,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Data
 public class ChatEntity implements Serializable {
-    Long conversationId;  // 所属会话的ID
+    String conversationId;  // 所属会话的ID
     String chatId; // 对话ID
     String type;
     String text;

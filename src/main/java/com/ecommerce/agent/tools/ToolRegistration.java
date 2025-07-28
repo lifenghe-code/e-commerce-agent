@@ -21,6 +21,7 @@ public class ToolRegistration {
         DateTimeTool dateTimeTool = new DateTimeTool();
         TerminateTool terminateTool = new TerminateTool();
         ExcelAnalysisTool excelAnalysisTool = new ExcelAnalysisTool();
+        PricingAnalysisTool pricingAnalysisTool = new PricingAnalysisTool();
         ExchangeTool exchangeTool = new ExchangeTool();
         ReturnVoucherTool returnVoucherTool = new ReturnVoucherTool();
         return ToolCallbacks.from(
@@ -30,7 +31,8 @@ public class ToolRegistration {
                 excelAnalysisTool,
                 pdfGenerationTool,
                 exchangeTool,
-                returnVoucherTool
+                returnVoucherTool,
+                pricingAnalysisTool
         );
     }
 }

@@ -54,10 +54,12 @@ class CustomerServiceAppTest {
 
     @Test
     void doChatWithConverter() {
-        String chatId = UUID.randomUUID().toString();
+        String chatId = "123456";
         // 测试地图 MCP
         String message = "介绍一下iphone16";
-        String answer =  customerServiceApp.doChatWithConverter(message, chatId);
+        customerServiceApp.doChatWithConverter(message, chatId);
+        message = "iphone16的影像系统怎么样";
+        customerServiceApp.doChatWithConverter(message, chatId);
     }
 
     @Test

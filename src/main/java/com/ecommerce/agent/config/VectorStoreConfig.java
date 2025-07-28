@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * 基于内存存储
  */
-@Configuration
+// @Configuration
 public class VectorStoreConfig {
 
     @Resource

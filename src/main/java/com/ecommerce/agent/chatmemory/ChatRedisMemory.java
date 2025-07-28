@@ -1,8 +1,10 @@
 package com.ecommerce.agent.chatmemory;
 
+import com.ecommerce.agent.config.ConversationManager;
 import com.ecommerce.agent.entity.ChatEntity;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.messages.*;
@@ -16,6 +18,9 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class ChatRedisMemory implements ChatMemory {
 
+    @Resource
+    ConversationManager conversationManager;
+
     private static final String KEY_PREFIX = "agent:chat:history:";
     private static final String SUMMARY_KEY_PREFIX = "agent:chat:summary:";
     private final RedisTemplate<String, Object> redisTemplate;
@@ -26,11 +31,14 @@ public class ChatRedisMemory implements ChatMemory {
 
     @Override
     public void add(String conversationId, List<Message> messages) {
+        conversationManager.createOrRefreshSession(conversationId);
+
         String key = KEY_PREFIX + conversationId;
         String key2 = SUMMARY_KEY_PREFIX + conversationId;
         List<ChatEntity> listIn = new ArrayList<>();
         List<ChatEntity> summaryListIn = new ArrayList<>();
         for (Message msg : messages) {
+
             if(msg.getMessageType().equals(MessageType.ASSISTANT)) {
                 String text = msg.getText();
                 ObjectMapper mapper = new ObjectMapper();
@@ -42,7 +50,8 @@ public class ChatRedisMemory implements ChatMemory {
                 }
 
                 ChatEntity ent = new ChatEntity();
-                ent.setChatId(conversationId);
+                ent.setConversationId(conversationId);
+                ent.setChatId(UUID.randomUUID().toString());
                 ent.setType(msg.getMessageType().getValue());
                 ent.setText(map.get("summary").toString());
                 summaryListIn.add(ent);
@@ -53,7 +62,8 @@ public class ChatRedisMemory implements ChatMemory {
             String text = strs.length == 2 ? strs[1] : strs[0];
 
             ChatEntity ent = new ChatEntity();
-            ent.setChatId(conversationId);
+            ent.setConversationId(conversationId);
+            ent.setChatId(UUID.randomUUID().toString());
             ent.setType(msg.getMessageType().getValue());
             ent.setText(text);
             listIn.add(ent);
